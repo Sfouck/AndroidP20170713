@@ -1,37 +1,38 @@
 package com.example.user.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
-    private EditText etFullName, etUserName, etPassword, etPhone, etEmail;
-
+    private ListView myListView;
+    private String[] items = {"Login","Signup"};
+    private Class<?>[] activitys = {LoginActivity.class,SignupActivity.class};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        etFullName = (EditText) findViewById(R.id.etFullName);
-        etUserName = (EditText) findViewById(R.id.etUserName);
-        etPassword = (EditText) findViewById(R.id.etPassword);
-        etPhone = (EditText) findViewById(R.id.etPhone);
-        etEmail = (EditText) findViewById(R.id.etEmail);
+        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,items);
+
+        myListView = (ListView) findViewById(R.id.myListView);
+        myListView.setAdapter(adapter);
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object listItem = myListView.getItemAtPosition(position);
+                Toast.makeText(view.getContext(), listItem.toString(),Toast.LENGTH_SHORT).
+                        show();
+                Intent intent = new Intent(MainActivity.this,activitys[position]);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
     }
 
-    public void signup(View v) {
-        String fullName = etFullName.getText().toString();
-        String userName = etUserName.getText().toString();
-        String passWord = etPassword.getText().toString();
-        String phoneNumber = etPhone.getText().toString();
-        String emailAddress = etEmail.getText().toString();
-
-        //fdsdfsfd
-
-        Toast.makeText(this, "Signing up...", Toast.LENGTH_SHORT).show();
-        new SignupActivity(this).execute(fullName, userName, passWord, phoneNumber, emailAddress);
-    }
 }
