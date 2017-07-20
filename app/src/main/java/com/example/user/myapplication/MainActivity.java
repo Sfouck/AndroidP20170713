@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private ListView myListView;
-    private String[] items = {"Login","Signup"};
-    private Class<?>[] activitys = {LoginActivity.class,SignupActivity.class};
+    private String[] items = {"Login","Signup","QueryMessage"};
+    private Class<?>[] activitys = {LoginActivity.class,SignupActivity.class,QueryActivity.class};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

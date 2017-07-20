@@ -19,13 +19,11 @@ import java.util.Random;
 
 public class checkLogin extends AsyncTask<String, Void, String> {
     private Context context;
+    private AsyncResponse<String> loginDelegate = null;
 
-    checkLogin(Context context) {
+    checkLogin(Context context,AsyncResponse<String> delegate) {
         this.context = context;
-    }
-
-    protected void onPreExecute() {
-
+        this.loginDelegate = delegate;
     }
 
     @Override
@@ -66,9 +64,11 @@ public class checkLogin extends AsyncTask<String, Void, String> {
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 String query_result = jsonObj.getString("query_result");
                 String userName = jsonObj.getString("userName");
+                String phone = jsonObj.getString("phone");
                 switch (query_result) {
                     case "SUCCESS":
                         Toast.makeText(context, "登入成功! 歡迎使用者  " + userName, Toast.LENGTH_SHORT).show();
+                        loginDelegate.taskFinish(phone);
                         break;
                     case "FAILURE":
                         Toast.makeText(context, "登入失敗!", Toast.LENGTH_SHORT).show();

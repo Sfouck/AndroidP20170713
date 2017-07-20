@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,33 +16,22 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 /**
- * Created by user on 2017/7/18.
+ * Created by user on 2017/7/20.
  */
 
-public class queryMessage extends AsyncTask<String, Void, String> {
+public class deleteMessage extends AsyncTask<String, Void, String> {
     private Context context;
-    private AsyncResponse<String> queryDelegate = null;
-    private ProgressDialog pDialog;
 
-    queryMessage(Context context,AsyncResponse<String> delegate) {
+    deleteMessage(Context context) {
         this.context = context;
-        this.queryDelegate = delegate;
-    }
-
-    @Override
-    protected void onPreExecute(){
-        pDialog = new ProgressDialog(context);
-        pDialog.setMessage("Please wait");
-        pDialog.setCancelable(false);
-        pDialog.show();
     }
 
     @Override
     protected String doInBackground(String... arg0) {
         String serverAdress = "140.130.33.143:80";
-        String targetPlugin = "queryMessage.php";
+        String targetPlugin = "deleteMessage.php";
 
-        String phoneNumber = arg0[0];
+        String msg_id = arg0[0];
 
         String link;
         String data;
@@ -51,7 +39,7 @@ public class queryMessage extends AsyncTask<String, Void, String> {
         String result;
 
         try {
-            data = "phonenumber=" + URLEncoder.encode(phoneNumber, "UTF-8");
+            data = "msg_id=" + URLEncoder.encode(msg_id, "UTF-8");
 
             link = String.format("http://%s/%s?%s", serverAdress,targetPlugin, data);
             URL url = new URL(link);
@@ -68,7 +56,6 @@ public class queryMessage extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String jsonStr) {
-        pDialog.cancel();
         Log.d("PostExecute", jsonStr);
         if (jsonStr != null) {
             try {
@@ -76,12 +63,10 @@ public class queryMessage extends AsyncTask<String, Void, String> {
                 String query_result = jsonObj.getString("query_result");
                 switch (query_result) {
                     case "SUCCESS":
-                        String query_message = jsonObj.getString("query_messages");
-                        queryDelegate.taskFinish(query_message);
-                        Log.d("query_message",query_message);
+                        Toast.makeText(context, "刪除成功", Toast.LENGTH_SHORT).show();
                         break;
                     case "FAILURE":
-                        Toast.makeText(context, "尚未留下訊息", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "刪除失敗", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         Toast.makeText(context, "讀取錯誤", Toast.LENGTH_SHORT).show();
